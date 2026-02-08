@@ -1,0 +1,22 @@
+name: AI DevOps Mirror - CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Display Repository Structure
+        run: |
+          echo "Repository structure:"
+          ls -R
+
+      - name: CI Pipeline Initialized
+        run: echo "AI DevOps Mirror CI pipeline is running successfully."
