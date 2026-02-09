@@ -6,17 +6,18 @@ on:
       - main
 
 jobs:
-  build:
+  analyze:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Display Repository Structure
-        run: |
-          echo "Repository structure:"
-          ls -R
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      - name: CI Pipeline Initialized
-        run: echo "AI DevOps Mirror CI pipeline is running successfully."
+      - name: Run repository analysis
+        run: |
+          python scripts/analyze_repo.py
