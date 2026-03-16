@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN ls -R
+RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "scripts/analyze_repo.py"]
