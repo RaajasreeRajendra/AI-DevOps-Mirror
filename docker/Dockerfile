@@ -4,4 +4,6 @@ WORKDIR /app
 
 COPY . .
 
+RUN ls -R
+
 CMD ["python", "scripts/analyze_repo.py"]
