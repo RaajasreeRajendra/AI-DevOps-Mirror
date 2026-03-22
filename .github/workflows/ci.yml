@@ -21,13 +21,20 @@ jobs:
       - name: Build Docker image
         run: docker build -t ai-devops-mirror -f docker/Dockerfile .
 
-      - name: Run analysis container
-        run: docker run -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} ai-devops-mirror
+      - name: Create container
+        run: docker create --name temp_container ai-devops-mirror
+
+      - name: Copy README from container
+        run: docker cp temp_container:/app/README.md ./README.md
+
+      - name: Remove container
+        run: docker rm temp_container
 
       - name: Commit updated README
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
+          git pull
           git add README.md
           git commit -m "AI: Auto-update README with code analysis" || echo "No changes"
           git push
