@@ -25,8 +25,7 @@ This repository was automatically analyzed by AI DevOps Mirror.
 - Analysis: Automated
 """
 
-    with open("README.md", "w") as f:
-        f.write(content)
+    with open("README.md", "w", encoding="utf-8") as f:        f.write(content)
 
     print("README generated successfully!")
 
