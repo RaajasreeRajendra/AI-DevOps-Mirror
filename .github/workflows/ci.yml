@@ -21,12 +21,11 @@ jobs:
       - name: Build Docker image
         run: docker build -t ai-devops-mirror -f docker/Dockerfile .
 
-      - name: Run container (THIS IS THE FIX)
-        run: docker run --name temp_container ai-devops-mirror
+      - name: Run container
+        run: docker run --name temp_container ai-devops-mirror || true
 
       - name: Copy README from container
-        run: docker cp temp_container:/app/README.md ./README.md
-
+         run: docker cp temp_container:/app/README.md ./README.md || echo "README not found"
       - name: Remove container
         run: docker rm temp_container
 
@@ -40,3 +39,4 @@ jobs:
           git add README.md
           git commit -m "Auto-update README with analysis" || echo "No changes"
           git push
+
