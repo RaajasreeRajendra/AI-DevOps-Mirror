@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository (with history)
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
@@ -25,11 +25,12 @@ jobs:
         run: docker run --name temp_container ai-devops-mirror || true
 
       - name: Copy README from container
-         run: docker cp temp_container:/app/README.md ./README.md || echo "README not found"
-      - name: Remove container
-        run: docker rm temp_container
+        run: docker cp temp_container:/app/README.md ./README.md || echo "README not found"
 
-      - name: Force update timestamp (VERY IMPORTANT)
+      - name: Remove container
+        run: docker rm temp_container || true
+
+      - name: Force update timestamp
         run: echo "Last updated: $(date)" >> README.md
 
       - name: Commit updated README
@@ -39,4 +40,3 @@ jobs:
           git add README.md
           git commit -m "Auto-update README with analysis" || echo "No changes"
           git push
-
