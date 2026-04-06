@@ -23,13 +23,24 @@ def main():
     # Simple logic (looks smart in demo)
     for file in files:
         if file.endswith(".py"):
-            issues.append(f"{file}: Check for proper function structure")
-            suggestions.append(f"{file}: Improve code readability")
+            issues.append(f"{file}: Review functions and structure")
+            suggestions.append(f"{file}: Improve readability and modularity")
 
-    if file.endswith(".txt"):
-        issues.append(f"{file}: Non-code file detected")
-        suggestions.append(f"{file}: Consider organizing files")        
-        
+        # 🔥 Detect small changes (basic trick)
+            try:
+                with open(file, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    if len(lines) < 5:
+                        issues.append(f"{file}: File too small, may lack logic")
+            except:
+                issues.append(f"{file}: Could not read file")
+
+        elif file.endswith(".txt"):
+            issues.append(f"{file}: Non-code file detected")
+            suggestions.append(f"{file}: Consider organizing or documenting properly")
+
+    else:
+        suggestions.append(f"{file}: Ensure proper usage")    
 
     content = f"""# AI DevOps Mirror Report
 
