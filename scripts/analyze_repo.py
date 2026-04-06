@@ -14,6 +14,19 @@ def get_all_files():
             files.append(os.path.join(root, f))
     return files
 
+import subprocess
+
+def get_git_diff():
+    try:
+        result = subprocess.run(
+            ["git", "diff", "HEAD~1", "HEAD"],
+            capture_output=True,
+            text=True
+        )
+        return result.stdout
+    except:
+        return "No changes detected."
+
 def main():
     print("Generating README...")
 
