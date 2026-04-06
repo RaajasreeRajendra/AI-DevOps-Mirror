@@ -49,4 +49,4 @@ The system analyzed repository files and generated insights automatically.
 if __name__ == "__main__":
     main() 
     
-    print("Analysis complete. README.md has been created.")
+    
