@@ -2,10 +2,19 @@ from datetime import datetime
 import os
 from datetime import datetime
 
+def get_all_files():
+    files = []
+    for root, dirs, filenames in os.walk("."):
+        if ".git" in root:
+            continue
+        for f in filenames:
+            files.append(os.path.join(root, f))
+    return files
+
 def main():
     print("Generating README...")
 
-    files = os.listdir()
+    files = get_all_files()
     file_count = len(files)
 
     issues = []
@@ -17,9 +26,10 @@ def main():
             issues.append(f"{file}: Check for proper function structure")
             suggestions.append(f"{file}: Improve code readability")
 
-        if file.endswith(".txt"):
-            issues.append(f"{file}: Non-code file detected")
-            suggestions.append(f"{file}: Consider organizing files")
+    if file.endswith(".txt"):
+        issues.append(f"{file}: Non-code file detected")
+        suggestions.append(f"{file}: Consider organizing files")        
+        
 
     content = f"""# AI DevOps Mirror Report
 
