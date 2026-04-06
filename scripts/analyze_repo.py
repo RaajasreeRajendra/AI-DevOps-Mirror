@@ -4,7 +4,7 @@ import subprocess
 
 # IST Time
 ist = timezone(timedelta(hours=5, minutes=30))
-current_time = datetime.now(ist)
+current_time = datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S %Z")
 
 def get_all_files():
     files = []
@@ -60,8 +60,8 @@ def main():
                     lines = f.readlines()
                     if len(lines) < 5:
                         issues.append(f"{file}: File too small, may lack logic")
-            except:
-                issues.append(f"{file}: Could not read file")
+            except Exception as e:
+                issues.append(f"{file}: Could not read file ({e})")
 
         elif file.endswith(".txt"):
             issues.append(f"{file}: Non-code file detected")
@@ -100,7 +100,6 @@ Total Files: {file_count}
 ---
 
 ## 🔍 Code Changes (Git Diff)
-
 {diff_output}
 '''
 
@@ -112,5 +111,3 @@ Total Files: {file_count}
 
 if __name__ == "__main__":
     main()
-    
-    
