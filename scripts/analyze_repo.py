@@ -19,14 +19,19 @@ import subprocess
 def get_git_diff():
     try:
         result = subprocess.run(
-            ["git", "diff", "HEAD~1", "HEAD"],
+            ["git", "diff", "HEAD^", "HEAD"],
             capture_output=True,
             text=True
         )
-        return result.stdout
-    except:
-        return "No changes detected."
+        diff = result.stdout
 
+        if not diff.strip():
+            return "No changes detected."
+
+        return diff
+
+    except:
+        return "Could not fetch git diff."
 def main():
     print("Generating README...")
 
