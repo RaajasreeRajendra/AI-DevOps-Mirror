@@ -1,11 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import os
-from datetime import datetime
-from datetime import timezone, timedelta
 
+# IST Time
 ist = timezone(timedelta(hours=5, minutes=30))
 current_time = datetime.now(ist)
-
 
 def get_all_files():
     files = []
@@ -25,13 +23,11 @@ def main():
     issues = []
     suggestions = []
 
-    # Simple logic (looks smart in demo)
     for file in files:
         if file.endswith(".py"):
             issues.append(f"{file}: Review functions and structure")
             suggestions.append(f"{file}: Improve readability and modularity")
 
-        # 🔥 Detect small changes (basic trick)
             try:
                 with open(file, "r", encoding="utf-8") as f:
                     lines = f.readlines()
@@ -44,8 +40,8 @@ def main():
             issues.append(f"{file}: Non-code file detected")
             suggestions.append(f"{file}: Consider organizing or documenting properly")
 
-    else:
-        suggestions.append(f"{file}: Ensure proper usage")    
+        else:
+            suggestions.append(f"{file}: Ensure proper usage")
 
     content = f"""# AI DevOps Mirror Report
 
@@ -73,6 +69,4 @@ The system analyzed repository files and generated insights automatically.
     print("README generated successfully!")
 
 if __name__ == "__main__":
-    main() 
-    
-   
+    main()
