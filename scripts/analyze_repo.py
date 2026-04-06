@@ -7,7 +7,6 @@ ist = timezone(timedelta(hours=5, minutes=30))
 current_time = datetime.now(ist)
 
 def get_all_files():
-    """Return all files in repo except .git"""
     files = []
     for root, dirs, filenames in os.walk("."):
         if ".git" in root:
@@ -17,17 +16,31 @@ def get_all_files():
     return files
 
 def get_git_diff():
-    """Return the latest commit diff"""
     try:
         result = subprocess.run(
             ["git", "diff", "HEAD~1", "HEAD"],
             capture_output=True,
             text=True
         )
-        diff = result.stdout.strip()
-        return diff if diff else "No changes detected."
-    except:
-        return "Could not fetch git diff."
+        diff = result.stdout
+
+        if not diff.strip():
+            return "No changes detected."
+
+        # Convert diff to GitHub style: + green, - red
+        diff_lines = diff.splitlines()
+        formatted_diff = []
+        for line in diff_lines:
+            if line.startswith("+") and not line.startswith("+++"):
+                formatted_diff.append(f"<span style='color:green;'>+ {line[1:]}</span>")
+            elif line.startswith("-") and not line.startswith("---"):
+                formatted_diff.append(f"<span style='color:red;'>- {line[1:]}</span>")
+            else:
+                formatted_diff.append(line)
+        return "\n".join(formatted_diff)
+
+    except Exception as e:
+        return f"Could not fetch git diff: {e}"
 
 def main():
     print("Generating README...")
@@ -42,7 +55,6 @@ def main():
         if file.endswith(".py"):
             issues.append(f"{file}: Review functions and structure")
             suggestions.append(f"{file}: Improve readability and modularity")
-
             try:
                 with open(file, "r", encoding="utf-8") as f:
                     lines = f.readlines()
@@ -54,20 +66,49 @@ def main():
         elif file.endswith(".txt"):
             issues.append(f"{file}: Non-code file detected")
             suggestions.append(f"{file}: Consider organizing or documenting properly")
+
         else:
             suggestions.append(f"{file}: Ensure proper usage")
 
-    # 🔥 Include Git diff for green/red highlights
+    # Get Git diff
     diff_output = get_git_diff()
 
-    content = f"""# 🪞 AI DevOps Mirror Report
+    content = f'''# AI DevOps Mirror Report
 
-🕒 Generated on: {current_time}
+Generated on: {current_time}
 
 ---
 
-## 🔍 Code Changes (Latest Commit)
+## 📊 Repository Overview
+Total Files: {file_count}
 
-```diff
+---
+
+## 📂 Files in Repository
+{chr(10).join(['- ' + f for f in files])}
+
+---
+
+## ⚠️ Detected Issues
+{chr(10).join(['- ' + i for i in issues]) if issues else "No major issues detected."}
+
+---
+
+## 💡 Suggested Improvements
+{chr(10).join(['- ' + s for s in suggestions]) if suggestions else "Code looks good."}
+
+---
+
+## 🔍 Code Changes (Git Diff)
+
 {diff_output}
-```
+'''
+
+    # Write Markdown README
+    with open("AI_DevOps_Mirror_Report.md", "w", encoding="utf-8") as f:
+        f.write(content)
+
+    print("README generated successfully!")
+
+if __name__ == "__main__":
+    main()
